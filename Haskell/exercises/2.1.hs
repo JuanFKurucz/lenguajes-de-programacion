@@ -42,51 +42,17 @@ propVars (OpBI p1 p2) = nub ((propVars p1) ++ (propVars p2))
 
 -- Asigna valores a las variables proposicionales de una proposicion (entiendo que es preferentemente a las PropVar String)
 assigns :: Prop -> [VarAsign]
-assigns p = if check then [fromList[x,y] | y <- motherList, x <- motherList, (fst y) /= (fst x)] else [fromList[(x,y)] | y <- [True, False], x <- vars]
+assigns p = [fromList(zip vars i) | i <- assignsAux varsLenght]
     where
       vars = propVars p
-      motherList = [(x,y) | y <- [True, False], x <- (propVars p)]
-      check = length vars > 1
+      varsLenght = length vars
 
+-- Devulve todas las posibles conbinaciones de True y False para n variables
+assignsAux :: Int -> [[Bool]]
+assignsAux 0 = [[]]
+assignsAux n = (map (False:) xs) ++ (map (True:) xs)
+    where xs = assignsAux (n-1)
 
--- --Genera asignaciones aleatorias de valores de verdad a variables
--- randomVarAsign :: [String] -> IO VarAsign
--- randomVarAsign [] = return Map.empty
--- randomVarAsign (x:xs) = do var <- randomRIO (True, False)
---                            cs <- randomVarAsign (xs)
---                            return (Map.union (Map.insert x var Map.empty) cs)
-
--- -- Definir un generador de proposiciones (tipo Prop) aleatorias: 
--- -- Limitar la altura del árbol. 
--- randomProp :: Int -> IO Prop 
--- randomProp 0 = do
---                rb <- randomRIO (True,False)
---                return (TruthValue rb)
--- randomProp x = do
---                 r <- randomRIO(0, 5)
---                 case r ::  Int of
---                   0 -> do
---                         rp <- randomProp (x-1)
---                         return (OpNOT rp)
---                   1 -> do
---                         rp1 <- randomProp (x-1)
---                         rp2 <- randomProp (x-1)
---                         return (OpAND rp1 rp2)
---                   2 -> do
---                         rp1 <- randomProp (x-1)
---                         rp2 <- randomProp (x-1)
---                         return (OpOR rp1 rp2)
---                   3 -> do
---                         rp1 <- randomProp (x-1)
---                         rp2 <- randomProp (x-1)
---                         return (OpIF rp1 rp2)
---                   4 -> do
---                         rp1 <- randomProp (x-1)
---                         rp2 <- randomProp (x-1)
---                         return (OpIFF rp1 rp2)
---                   5 -> do
---                         rb <- randomRIO (True,False)
---                         return (TruthValue rb)
 
 -- Calcula si una proposición es una tautologia (Todas las combinaciones de variables dan como resultado True)
 tautology :: Prop -> Bool
@@ -96,6 +62,10 @@ tautology prop =  if check then and (map (eval prop) varAssigns) else eval prop 
       varAssigns = assigns prop
       check = length varAssigns > 0
 
--- print (assigns (OpOR (PropVar "hola1") (OpNOT (PropVar "hola2"))))
--- print (tautology(OpBI (OpAND (PropVar "a1") (PropVar "a2")) (OpAND (PropVar "a2") (PropVar "a1"))))
-main = print (tautology (OpOR (PropVar "hola1") (OpNOT (PropVar "hola1"))))
+ main = print (tautology (OpOR (PropVar "hola1") (OpNOT (PropVar "hola2")))) -- Not Tautology
+-- main = print (tautology(OpBI (OpAND (PropVar "a1") (PropVar "a2")) (OpAND (PropVar "a2") (PropVar "a1")))) -- Tautology
+-- main = print (tautology (OpOR(OpOR(PropVar "q1")(PropVar "q2"))(OpOR(PropVar "q3")(OpNOT (PropVar"q1"))))) -- Tautology
+-- main = print (tautology (OpOR(OpOR(PropVar "q1")(PropVar "q2"))(OpOR(PropVar "q3")(OpNOT (PropVar"q4"))))) -- Not Tautology
+-- main = print (tautology (TruthValue False )) -- Not Tautology
+-- main = print (tautology (TruthValue True )) -- Tautology
+
