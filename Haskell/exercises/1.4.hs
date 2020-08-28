@@ -50,6 +50,12 @@ randomDouble = do
   g <- newStdGen
   return (Data.List.take 1 (randoms g :: [Double]) !! 0)
 
+generateKey :: IO String
+generateKey = do
+  number <- randomInt 10
+  key <- randomStr number "qwertyuiopasdfghjklzxcvbnm1234567890.,;[]{}?!"
+  return key
+  
 randomArray :: Int -> Int -> Int -> IO [JSONValue]
 randomArray 0 height width = return ([])
 randomArray quantity height width = do
@@ -57,18 +63,18 @@ randomArray quantity height width = do
   right <- (randomArray (quantity-1) height width)
   return ([left] ++ right)
 
-generateKey :: IO String
-generateKey = do
-  number <- randomInt 10
-  key <- randomStr number "qwertyuiopasdfghjklzxcvbnm1234567890.,;[]{}?!"
-  return key
+createKeyPairObject :: Int -> Int -> Int -> IO [String]
+createKeyPairObject 0 height width = return ([])
+createKeyPairObject quantity height width = do
+  left <- generateKey
+  right <- (createKeyPairObject (quantity-1) height width)
+  return ([left] ++ right)
 
-createObject :: Int -> Int -> IO JSONValue
-createObject height width = do
-  key <- generateKey
-  value <- (randomJSON (height-1) (width-1))
-  return (JSONObject (Data.Map.fromList [(key,value)]))
-
+createObject :: Int -> Int -> Int -> IO JSONValue
+createObject quantity height width = do
+  keys <- createKeyPairObject quantity height width
+  values <- randomArray quantity height width
+  return (JSONObject (Data.Map.fromList (zip keys values)))
 
 traductorJSON :: Int -> Int -> Int -> IO JSONValue
 traductorJSON tipo height width =
@@ -84,15 +90,19 @@ traductorJSON tipo height width =
       key <- generateKey
       return (JSONString key)
     4 -> do
-      quantity <- randomInt height
+      quantity <- randomInt width
       values <- randomArray quantity height width
       return (JSONArray values)
     5 -> do
-      quantity <- randomInt height
-      object <- (createObject height width)
+      quantity <- randomInt width
+      object <- (createObject quantity height width)
       return object
 
 randomJSON :: Int -> Int -> IO JSONValue
+randomJSON 0 width = do
+  randomType <- (randomInt 3)
+  json <- traductorJSON randomType 0 width
+  return json
 randomJSON height width = do
     randomType <- (randomInt 5)
     json <- traductorJSON randomType height width
