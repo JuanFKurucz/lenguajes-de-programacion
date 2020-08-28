@@ -50,11 +50,6 @@ randomDouble = do
   g <- newStdGen
   return (Data.List.take 1 (randoms g :: [Double]) !! 0)
 
-generateKey :: IO String
-generateKey = do
-  number <- randomInt 10
-  key <- randomStr number "qwertyuiopasdfghjklzxcvbnm1234567890.,;[]{}?!"
-  return key
   
 randomArray :: Int -> Int -> Int -> IO [JSONValue]
 randomArray 0 height width = return ([])
@@ -63,18 +58,24 @@ randomArray quantity height width = do
   right <- (randomArray (quantity-1) height width)
   return ([left] ++ right)
 
-createKeyPairObject :: Int -> Int -> Int -> IO [String]
-createKeyPairObject 0 height width = return ([])
-createKeyPairObject quantity height width = do
-  left <- generateKey
-  right <- (createKeyPairObject (quantity-1) height width)
+randomString :: IO String
+randomString = do
+  number <- randomInt 10
+  key <- randomStr number ([' '..'~'])
+  return key
+
+randomNStrings :: Int -> Int -> Int -> IO [String]
+randomNStrings 0 height width = return ([])
+randomNStrings quantity height width = do
+  left <- randomString
+  right <- (randomNStrings (quantity-1) height width)
   return ([left] ++ right)
 
-createObject :: Int -> Int -> Int -> IO JSONValue
-createObject quantity height width = do
-  keys <- createKeyPairObject quantity height width
+randomObject :: Int -> Int -> Int -> IO JSONValue
+randomObject quantity height width = do
+  keys <- randomNStrings quantity height width
   values <- randomArray quantity height width
-  return (JSONObject (Data.Map.fromList (zip keys values)))
+  return (JSONObject (Data.Map.fromList (zip (nub keys) values)))
 
 traductorJSON :: Int -> Int -> Int -> IO JSONValue
 traductorJSON tipo height width =
@@ -87,7 +88,7 @@ traductorJSON tipo height width =
       a <- randomDouble
       return (JSONNumber a)
     3 -> do
-      key <- generateKey
+      key <- randomString
       return (JSONString key)
     4 -> do
       quantity <- randomInt width
@@ -95,7 +96,7 @@ traductorJSON tipo height width =
       return (JSONArray values)
     5 -> do
       quantity <- randomInt width
-      object <- (createObject quantity height width)
+      object <- (randomObject quantity height width)
       return object
 
 randomJSON :: Int -> Int -> IO JSONValue
