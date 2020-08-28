@@ -16,7 +16,6 @@ data Prop =
 -- Definimos un "alias" para el mapa/diccionario propocicion -> valor
 type VarAsign = Map String Bool
 
--- ??
 emptyAsign :: Map Any a
 emptyAsign = fromList []
 
