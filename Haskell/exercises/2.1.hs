@@ -35,10 +35,10 @@ propVars :: Prop -> [String]
 propVars (TruthValue _) = []
 propVars (PropVar x) = [x]
 propVars (OpNOT p) = propVars p
-propVars (OpAND p1 p2) = concat(propVars p1, propVars p2)
-propVars (OpOR p1 p2) = concat(propVars p1, propVars p2)
-propVars (OpCON p1 p2) = concat(propVars p1, propVars p2)
-propVars (OpBI p1 p2) = concat(propVars p1, propVars p2)
+propVars (OpAND p1 p2) = nub ((propVars p1) ++ (propVars p2))
+propVars (OpOR p1 p2) = nub ((propVars p1) ++ (propVars p2))
+propVars (OpCON p1 p2) = nub ((propVars p1) ++ (propVars p2))
+propVars (OpBI p1 p2) = nub ((propVars p1) ++ (propVars p2))
 
 -- Asigna valores a las variables proposicionales de una proposicion (entiendo que es preferentemente a las PropVar String)
 assigns :: Prop -> [VarAsign]
@@ -83,6 +83,7 @@ assigns p =  (nub [fromList [(x,y)] | x <- (propVars p), y <- [True, False]])
 --                         rb <- randomRIO (True,False)
 --                         return (TruthValue rb)
 
+-- Calcula si una proposición es una tautologia (Todas las combinaciones de variables dan como resultado True)
 tautology :: Prop -> Bool
 tautology (TruthValue a) = a
 tautology prop =  if check then and (map (eval prop) varAssigns) else eval prop (fromList [])
@@ -90,7 +91,5 @@ tautology prop =  if check then and (map (eval prop) varAssigns) else eval prop 
       varAssigns = assigns prop
       check = length varAssigns > 0
 
--- Calcula si una proposición es una tautologia (Todas las combinaciones de variables dan como resultado True)
---tautology :: Prop -> Bool
-
-main = print (tautology (OpNOT (TruthValue True)))
+-- print (assigns (OpOR (PropVar "hola1") (OpNOT (PropVar "hola2"))))
+main = print (tautology(OpAND (PropVar "hola1") (OpNOT (PropVar "hola2"))))
