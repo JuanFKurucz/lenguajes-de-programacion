@@ -42,7 +42,12 @@ propVars (OpBI p1 p2) = nub ((propVars p1) ++ (propVars p2))
 
 -- Asigna valores a las variables proposicionales de una proposicion (entiendo que es preferentemente a las PropVar String)
 assigns :: Prop -> [VarAsign]
-assigns p =  (nub [fromList [(x,y)] | x <- (propVars p), y <- [True, False]])
+assigns p = if check then [fromList[x,y] | y <- motherList, x <- motherList, (fst y) /= (fst x)] else [fromList[(x,y)] | y <- [True, False], x <- vars]
+    where
+      vars = propVars p
+      motherList = [(x,y) | y <- [True, False], x <- (propVars p)]
+      check = length vars > 1
+
 
 -- --Genera asignaciones aleatorias de valores de verdad a variables
 -- randomVarAsign :: [String] -> IO VarAsign
@@ -92,4 +97,5 @@ tautology prop =  if check then and (map (eval prop) varAssigns) else eval prop 
       check = length varAssigns > 0
 
 -- print (assigns (OpOR (PropVar "hola1") (OpNOT (PropVar "hola2"))))
-main = print (tautology(OpAND (PropVar "hola1") (OpNOT (PropVar "hola2"))))
+-- print (tautology(OpBI (OpAND (PropVar "a1") (PropVar "a2")) (OpAND (PropVar "a2") (PropVar "a1"))))
+main = print (tautology (OpOR (PropVar "hola1") (OpNOT (PropVar "hola1"))))
