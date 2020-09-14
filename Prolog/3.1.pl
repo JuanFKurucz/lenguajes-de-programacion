@@ -8,7 +8,7 @@ numToList(7,[empty,empty,empty,empty,empty,empty,queen,empty]).
 numToList(8,[empty,empty,empty,empty,empty,empty,empty,queen]).
 
 
-boardRows([A1,B1,C1,D1,E1,F1,G1],[A,B,C,D,E,F,G,H]) :- numToList(A,A1), numToList(B,B1), numToList(C,C1), numToList(D,D1), 
+boardRows([A1,B1,C1,D1,E1,F1,G1,H1],[A,B,C,D,E,F,G,H]) :- numToList(A,A1), numToList(B,B1), numToList(C,C1), numToList(D,D1), 
 numToList(E,E1), numToList(F,F1), numToList(G,G1), numToList(H,H1).
 
 
@@ -59,4 +59,4 @@ eightQueensBoard(B) :- boardRows(B,R), eightQueens(R).
 % ?- boardRows(B,[1,2,3,4,5,6,7,8]).
 % B = [[queen, empty, empty, empty, empty, empty, empty, empty], [empty, queen, empty, empty, empty, empty, empty|...], [empty, empty, queen, empty, empty, empty|...], [empty, empty, empty, queen, empty|...], [empty, empty, empty, empty|...], [empty, empty, empty|...], [empty, empty|...]].
 
-[[queen,empty,empty,empty,empty,empty,empty,empty],[empty,queen,empty,empty,empty,empty,empty,empty],[empty,empty,queen,empty,empty,empty,empty,empty],[empty,empty,empty,queen,empty,empty,empty,empty],[empty,empty,empty,empty,queen,empty,empty,empty],[empty,empty,empty,empty,empty,queen,empty,empty],[empty,empty,empty,empty,empty,empty,queen,empty],[empty,empty,empty,empty,empty,empty,empty,queen]]
+%[[queen,empty,empty,empty,empty,empty,empty,empty],[empty,queen,empty,empty,empty,empty,empty,empty],[empty,empty,queen,empty,empty,empty,empty,empty],[empty,empty,empty,queen,empty,empty,empty,empty],[empty,empty,empty,empty,queen,empty,empty,empty],[empty,empty,empty,empty,empty,queen,empty,empty],[empty,empty,empty,empty,empty,empty,queen,empty],[empty,empty,empty,empty,empty,empty,empty,queen]]
