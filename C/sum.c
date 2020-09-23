@@ -1,29 +1,56 @@
 #include <stdio.h>
 #include <string.h>
 
-#define LARGO 100
+#define LARGO 10
+char** split(char * originStringPointer, char * delimiterStringPointer, char **resultArrayPointer, int size);
 
+/*
+ * Main ej 1.4
+ * 
+ */
+int main( ) {
+    // declaraciones
+    char *originString;
+    char *resultArray[LARGO];
+    int i;
 
-char* split(char * stringPointer, char * delimiterStringPointer){
-    // Declaraciones
-    char *tokenPointer;
-    char result[10];
-    int tokenNumber;
-    // Extraer tokens a una lista y contar cuantos tenemos
-    tokenNumber = 0;
-    while( (tokenPointer = strsep(&stringPointer, delimiterStringPointer)) != NULL ){
-        result[tokenNumber] = *tokenPointer;
-        printf("SPLIT: %s\n",tokenPointer);
-        tokenNumber++;
+    // Duplico el string
+    originString = strdup("1 2 3 4 5 6 7 prueba");
+
+    // Separo el string en tokens
+    split(originString, " ", resultArray, LARGO);
+
+    // Imprimo el array de strings para ver el resultado
+    for (i = 0; i < LARGO; i++){
+        printf("String = %s", resultArray[i] );
+        printf("\tAddress of string literal = %p\n", resultArray[i]);
     }
-    printf("SPLIT RESULT: %s\n", result);
-    return " ";
+
+    return 0;
 }
 
-int main( ) {
+/*
+ * Funcion que toma un string (puntero) y un delimitador y separa
+ * el string.
+ * Retorna un array con los tokens.
+ */
+char** split(char * originStringPointer, char * delimiterStringPointer, char **resultArrayPointer, int size){
+    
+    // Declaraciones
+    char *tokenPointer;
+    char *token[LARGO];
+    int  i;
 
-    // declaraciones
-    char *stringPointer;
-    stringPointer = strdup("1 2 3 4 5 6 7 prueba");
-    printf("MAIN: %s\n", split(stringPointer, " "));
+    i = 0;
+    // Extraer tokens y ponerlos en un array de strings uno a uno. Mientras hay espacio en el array de salida y
+    // el puntero al token es distinto de nulo
+    while(( i < size ) && ((tokenPointer = strsep(&originStringPointer, delimiterStringPointer)) != NULL) ){
+        resultArrayPointer[i] = strdup(tokenPointer);
+        printf("SPLIT: %s\n", tokenPointer);
+        
+        i++;
+    }
+
+    //printf("SPLIT RESULT: %s\n", resultArrayPointer);
+    return resultArrayPointer;
 }
