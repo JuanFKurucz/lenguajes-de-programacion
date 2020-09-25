@@ -6,6 +6,7 @@
 // Declarar funciones
 int countElements(char * originStringPointer, char * delimiterStringPointer, int size);
 int *splitToIntArray(char * originStringPointer, char * delimiterStringPointer, int *resultArrayPointer, int size);
+int sum(int *intArray, int size);
 
 /*
  * Main ej 1.4
@@ -21,7 +22,7 @@ int main( ) {
     printf( "Ingresa numeros naturales separados por espacio : ");
     fgets(cadenaNaturales, LARGO, stdin);
 
-    // Duplico el string para preservar el original
+    // Duplico el string para preservar el original por que countElements rompe el string
     originString = strdup(cadenaNaturales);
 
     // Cuento cantidad de elementos (rompe el string originString)
@@ -35,12 +36,9 @@ int main( ) {
     splitToIntArray(originString, " ",  elementos, count);
 
     // Sumo
-    sumResult = 0;
-    for (i = 0; i < count; i++){
-        sumResult += elementos[i];
-    }
-
+    sumResult = sum(elementos, count);
     printf("El resultado de la suma es: %d\n", sumResult);
+
     return 0;
 }
 
@@ -87,4 +85,17 @@ int *splitToIntArray(char * originStringPointer, char * delimiterStringPointer, 
 
     printf("El while termino el la iteracion: %d\n", i );
     return resultArrayPointer;
+}
+
+int sum(int *intArray, int size){
+
+    // Declaraciones
+    int sumResult, i;
+
+    // Suma
+    sumResult = 0;
+    for (i = 0; i < size; i++){
+        sumResult += intArray[i];
+    }
+    return sumResult;
 }
