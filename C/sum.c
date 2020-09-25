@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#define LARGO 10
-char** split(char * originStringPointer, char * delimiterStringPointer, char **resultArrayPointer, int size);
+#define LARGO 100
+
+// Declarar funciones
+int countElements(char * originStringPointer, char * delimiterStringPointer, int size);
+int *splitToIntArray(char * originStringPointer, char * delimiterStringPointer, int *resultArrayPointer, int size);
 
 /*
  * Main ej 1.4
@@ -10,47 +13,78 @@ char** split(char * originStringPointer, char * delimiterStringPointer, char **r
  */
 int main( ) {
     // declaraciones
+    char cadenaNaturales[LARGO];
     char *originString;
-    char *resultArray[LARGO];
-    int i;
+    int count, i, sumResult;
 
-    // Duplico el string
-    originString = strdup("1 2 3 4 5 6 7 prueba");
+    // Pedir input
+    printf( "Ingresa numeros naturales separados por espacio : ");
+    fgets(cadenaNaturales, LARGO, stdin);
 
-    // Separo el string en tokens
-    split(originString, " ", resultArray, LARGO);
+    // Duplico el string para preservar el original
+    originString = strdup(cadenaNaturales);
 
-    // Imprimo el array de strings para ver el resultado
-    for (i = 0; i < LARGO; i++){
-        printf("String = %s", resultArray[i] );
-        printf("\tAddress of string literal = %p\n", resultArray[i]);
+    // Cuento cantidad de elementos (rompe el string originString)
+    count = countElements(originString, " ", LARGO);
+
+    // Declaro array con el tamaño de la cantidad de elementos
+    int elementos[count];
+
+    // Obtengo array de ints
+    originString = strdup(cadenaNaturales);
+    splitToIntArray(originString, " ",  elementos, count);
+
+    // Sumo
+    sumResult = 0;
+    for (i = 0; i < count; i++){
+        sumResult += elementos[i];
     }
 
+    printf("El resultado de la suma es: %d\n", sumResult);
     return 0;
+}
+
+/*
+ * Funcion que toma un string (puntero) y un delimitador y 
+ * retorna la cantidad de elementos que contiene el string al separar
+ * por el delimitador
+ */
+int countElements(char * originStringPointer, char * delimiterStringPointer, int size){
+    
+    // Declaraciones
+    char *tokenPointer;
+    char *token[LARGO];
+    int  count;
+
+    count = 0;
+    // Extraer tokens para contar la cantidad de elementos
+    while(( count < size ) && ((tokenPointer = strsep(&originStringPointer, delimiterStringPointer)) != NULL) ){
+       count++;
+    }
+
+    return count;
 }
 
 /*
  * Funcion que toma un string (puntero) y un delimitador y separa
  * el string.
- * Retorna un array con los tokens.
+ * Retorna un array con los tokens casteados a int usando sscanf.
  */
-char** split(char * originStringPointer, char * delimiterStringPointer, char **resultArrayPointer, int size){
+int *splitToIntArray(char * originStringPointer, char * delimiterStringPointer, int *resultArrayPointer, int size){
     
     // Declaraciones
     char *tokenPointer;
-    char *token[LARGO];
     int  i;
 
     i = 0;
-    // Extraer tokens y ponerlos en un array de strings uno a uno. Mientras hay espacio en el array de salida y
-    // el puntero al token es distinto de nulo
+    // Extraer tokens y ponerlos en un array casteandolos uno a uno a int.
     while(( i < size ) && ((tokenPointer = strsep(&originStringPointer, delimiterStringPointer)) != NULL) ){
-        resultArrayPointer[i] = strdup(tokenPointer);
-        printf("SPLIT: %s\n", tokenPointer);
+        sscanf(tokenPointer, "%d", &resultArrayPointer[i]);
+        printf("SPLIT: %d\n", resultArrayPointer[i]);
         
         i++;
     }
 
-    //printf("SPLIT RESULT: %s\n", resultArrayPointer);
+    printf("El while termino el la iteracion: %d\n", i );
     return resultArrayPointer;
 }
