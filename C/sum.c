@@ -87,6 +87,11 @@ int *splitToIntArray(char * originStringPointer, char * delimiterStringPointer, 
     return resultArrayPointer;
 }
 
+
+/*
+ * Funcion que realiza la suma de los elementos de un array de int
+ * 
+ */
 int sum(int *intArray, int size){
 
     // Declaraciones
