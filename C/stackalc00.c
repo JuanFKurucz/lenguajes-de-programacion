@@ -4,14 +4,14 @@
 #define LARGO 100
 
 // Declarar funciones
-int evaluate(char *code, int *pos, int *stack, int *top);
+int evaluate(char **code, int *pos, int *stack, int *top);
 char** split(char * originStringPointer, char * delimiterStringPointer, char **resultArrayPointer, int size);
 int add(int a, int b);
 int sub(int a, int b);
 int mult(int a, int b);
 int div(int a, int b);
-int pusheye(char *stack, int *top);
-int popeye(char *stack, int *top);
+int pusheye(int elem, int *stack, int *top);
+int popeye(int *stack, int *top);
 
 /*
  * Main ej 2.2
@@ -19,61 +19,65 @@ int popeye(char *stack, int *top);
  */
 int main( ) {
     // Declarar var
-    char *code[LARGO] = {"ADD","PUSH-3","ADD"};
+    char *code[LARGO] = {"ADD"};
     int pos, *stack, top;   
 
     // inicalizamos
     stack[LARGO];
     pos = 0;
     top = 0;
-
+    stack[0] = 1;
+    stack[1] = 2;
     evaluate(code, &pos, stack, &top);
+
+    printf("STACK: %d", *stack);
 }
 
 /**
  * 
  * 
  */
-int evaluate(char *code, int *pos, int *stack, int *top){
+int evaluate(char **code, int *pos, int *stack, int *top){
     // Declarar variables
     char *instruction;
     char *instruction_parsed[2];
-    int a, b;
+    int a, b, z;
     // Agarra la intrucción en la pos
     instruction = code[*pos];
  
-    if (strcmp('ADD',instruction)){
+    if (strcmp("ADD",instruction)){
         printf("Entramos en ADD");
         a = popeye(stack, top);
         b = popeye(stack, top);
         // chequear que a y b tengan valores
-        return add(a, b);
+        return pusheye( a + b, stack, top);
     }
-    else if (strcmp('DIV',instruction))
+    else if (strcmp("DIV",instruction))
     {
       printf("Entramos en DIV");
       a = popeye(stack, top);
       b = popeye(stack, top);
-      return div(a, b);
+      return pusheye(a / b , stack, top);
     }
-    else if (strcmp('SUB',instruction))
+    else if (strcmp("SUB",instruction))
     {
         printf("Entramos en SUB");
         a = popeye(stack, top);
         b = popeye(stack, top);
-        return sub(a, b);
+        return pusheye(a - b, stack, top);
     }
-    else if (strcmp('MULT',instruction))
+    else if (strcmp("MULT",instruction))
     {
         printf("Entramos en SUB");
         a = popeye(stack, top);
         b = popeye(stack, top);
-        return mult(a, b);
+        return pusheye(a * b, stack, top);
     }
     else
     {
-        split(instruction,"-", instruction_parsed,2);   
-        pusheye(stack, top, instruction_parsed[1]);
+        split(instruction,"-", instruction_parsed,2);
+        sscanf(instruction_parsed[1],"%d",&z);
+        pusheye(z, stack, top);
     }
     pos++;
 }
@@ -104,12 +108,12 @@ char** split(char * originStringPointer, char * delimiterStringPointer, char **r
     return resultArrayPointer;
 }
 
-int pusheye(int elem, char *stack, int *top){
+int pusheye(int elem, int *stack, int *top){
     *top++;
     stack[*top] = elem;
     return 0;
 }
 
-int popeye(char *stack, int *top){
+int popeye(int *stack, int *top){
     return stack[*top--];    
 }
