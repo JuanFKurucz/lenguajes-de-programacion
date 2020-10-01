@@ -128,12 +128,14 @@ char **split(char *originStringPointer, char *delimiterStringPointer, char **res
 
 int pusheye(int elem, int *stack, int *top)
 {
-    *top++;
+    *top = *top + 1;
     stack[*top] = elem;
     return 0;
 }
 
 int popeye(int *stack, int *top)
 {
-    return stack[*top--];
+    int res = stack[*top];
+    *top = *top - 1;
+    return res;
 }
