@@ -20,17 +20,16 @@ int popeye(int *stack, int *top);
 int main( ) {
     // Declarar var
     char *code[LARGO] = {"ADD"};
-    int pos, *stack, top;   
+    int pos, stack[LARGO], top;  
 
     // inicalizamos
-    stack[LARGO];
     pos = 0;
-    top = 0;
+    top = 1;
     stack[0] = 1;
     stack[1] = 2;
     evaluate(code, &pos, stack, &top);
 
-    printf("STACK: %d", *stack);
+    printf("STACK: %d\n", *stack);
 }
 
 /**
@@ -46,7 +45,7 @@ int evaluate(char **code, int *pos, int *stack, int *top){
     instruction = code[*pos];
  
     if (strcmp("ADD",instruction)){
-        printf("Entramos en ADD");
+        printf("Entramos en ADD\n");
         a = popeye(stack, top);
         b = popeye(stack, top);
         // chequear que a y b tengan valores
@@ -54,21 +53,21 @@ int evaluate(char **code, int *pos, int *stack, int *top){
     }
     else if (strcmp("DIV",instruction))
     {
-      printf("Entramos en DIV");
+      printf("Entramos en DIV\n");
       a = popeye(stack, top);
       b = popeye(stack, top);
       return pusheye(a / b , stack, top);
     }
     else if (strcmp("SUB",instruction))
     {
-        printf("Entramos en SUB");
+        printf("Entramos en SUB\n");
         a = popeye(stack, top);
         b = popeye(stack, top);
         return pusheye(a - b, stack, top);
     }
     else if (strcmp("MULT",instruction))
     {
-        printf("Entramos en SUB");
+        printf("Entramos en MULT\n");
         a = popeye(stack, top);
         b = popeye(stack, top);
         return pusheye(a * b, stack, top);
