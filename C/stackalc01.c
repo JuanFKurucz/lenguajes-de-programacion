@@ -1,3 +1,9 @@
+/*
+Diego Bergara
+Fernando Rakovsky
+Juan Francisco Kurucz
+Javier Martin
+*/
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -12,22 +18,24 @@ int popeye(int *stack, int *top);
 char *strsep(char **stringp, const char *delim);
 
 /*
- * Main ej 2.2
+ * Main ej 2.3
  * 
  */
 int main()
 {
-    //1 2 3 MULT ADD = 7 
-    //22 33 4 SUB MULT = 638
-    //1 10 5 DIV ADD = 3
-    //10 2 10 5 DIV ADD MULT = 40
-    //5 5 5 5 5 1 SUB MULT ADD DIV ADD = 5
-    //MULT ADD SUB = 435
-    //25 10 4 8 9 3 ADD SUB ADD MULT ADD = 25
-    //15 ADD MULT = 17400
-    //2 DIV 4 ADD = 8704
-    //45 20 45450 37 25 108 25 35 12 SUB MULT ADD DIV ADD ADD SUB ADD = -45422
-    // Declarar var
+    // CASOS DE PRUEBA
+    // 1 2 3 MULT ADD = 7 
+    // 22 33 4 SUB MULT = 638
+    // 1 10 5 DIV ADD = 3
+    // 10 2 10 5 DIV ADD MULT = 40
+    // 5 5 5 5 5 1 SUB MULT ADD DIV ADD = 5
+    // MULT ADD SUB = 435
+    // 25 10 4 8 9 3 ADD SUB ADD MULT ADD = 25
+    // 15 ADD MULT = 17400
+    // 2 DIV 4 ADD = 8704
+    // 45 20 45450 37 25 108 25 35 12 SUB MULT ADD DIV ADD ADD SUB ADD = -45422
+
+    // Declarar vars
     int stack[LARGO], top = -1;
     char s[2] = " ";
     while (1 == 1)
