@@ -1,15 +1,12 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 #define LARGO 100
 
 // Declarar funciones
 void evaluate(char **code, int *pos, int *stack, int *top);
 char **split(char *originStringPointer, char *delimiterStringPointer, char **resultArrayPointer, int size, int *resultSize);
-int add(int a, int b);
-int sub(int a, int b);
-int mult(int a, int b);
-int div(int a, int b);
 int pusheye(int elem, int *stack, int *top);
 int popeye(int *stack, int *top);
 char *strsep(char **stringp, const char *delim);
@@ -57,7 +54,7 @@ int main()
             i++;
         }
 
-        printf("RESULT: %d\n", top);
+        printf("STACK TOP: %d\n", top);
         for (int z = 0; z < top + 1; z++)
         {
             printf("STACK %d: %d\n", z, stack[z]);
@@ -66,7 +63,8 @@ int main()
 }
 
 /**
- * 
+ * Realiza la operacion definida en la posicion POS del codigo CODE y avanza
+ * el puntero POS.
  * 
  */
 void evaluate(char **code, int *pos, int *stack, int *top)
@@ -76,7 +74,7 @@ void evaluate(char **code, int *pos, int *stack, int *top)
     int a, b;
     // Agarra la intrucción en la pos
     instruction = code[*pos];
-    if (strcmp("ADD", instruction) == 0)
+    if (*top > 0 && strcmp("ADD", instruction) == 0)
     {
         printf("Entramos en ADD\n");
         a = popeye(stack, top);
@@ -84,28 +82,28 @@ void evaluate(char **code, int *pos, int *stack, int *top)
         // chequear que a y b tengan valores
         pusheye(a + b, stack, top);
     }
-    else if (strcmp("DIV", instruction) == 0)
+    else if (*top > 0 && strcmp("DIV", instruction) == 0)
     {
         printf("Entramos en DIV\n");
         a = popeye(stack, top);
         b = popeye(stack, top);
         pusheye(b / a, stack, top);
     }
-    else if (strcmp("SUB", instruction) == 0)
+    else if (*top > 0 && strcmp("SUB", instruction) == 0)
     {
         printf("Entramos en SUB\n");
         a = popeye(stack, top);
         b = popeye(stack, top);
         pusheye(b - a, stack, top);
     }
-    else if (strcmp("MULT", instruction) == 0)
+    else if (*top > 0 && strcmp("MULT", instruction) == 0)
     {
         printf("Entramos en MULT\n");
         a = popeye(stack, top);
         b = popeye(stack, top);
         pusheye(a * b, stack, top);
     }
-    else
+    else if (isdigit(*instruction))
     {
         int z = 0;
         printf("Entramos en ELSE para insertar valor en el stack: %s\n", instruction);
