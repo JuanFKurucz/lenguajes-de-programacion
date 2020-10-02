@@ -41,7 +41,7 @@ int main()
             texto[len - 1] = 0;
         }
 
-        split(texto, s, code, 5, &maxI);
+        split(texto, s, code, LARGO, &maxI);
         int i = 0;
         while (i < maxI)
         {
@@ -81,7 +81,7 @@ void evaluate(char **code, int *pos, int *stack, int *top)
         printf("Entramos en DIV\n");
         a = popeye(stack, top);
         b = popeye(stack, top);
-        pusheye(a / b, stack, top);
+        pusheye(b / a, stack, top);
     }
     else if (strcmp("SUB", instruction) == 0)
     {
