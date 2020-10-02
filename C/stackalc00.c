@@ -35,14 +35,14 @@ char *strsep(char **stringp, const char *delim)
 int main()
 {
     // Declarar var
-    char *code[LARGO] = {"ADD"};
+    char *code[LARGO] = {"PUSH-3"};
     int pos, stack[LARGO], top;
 
     // inicalizamos
     pos = 0;
     top = 1;
-    stack[0] = 1;
-    stack[1] = 2;
+    stack[0] = 2;
+    stack[1] = 6;
     evaluate(code, &pos, stack, &top);
 
     printf("STACK: %d\n", *stack);
@@ -56,10 +56,11 @@ int evaluate(char **code, int *pos, int *stack, int *top)
 {
     // Declarar variables
     char *instruction;
-    char *instruction_parsed[2];
+    char *instruction_parsed[3];
     int a, b, z;
     // Agarra la intrucción en la pos
     instruction = code[*pos];
+    printf("Instruccion: %s\n", instruction);
     if (strcmp("ADD", instruction) == 0)
     {
         printf("Entramos en ADD\n");
@@ -91,6 +92,7 @@ int evaluate(char **code, int *pos, int *stack, int *top)
     }
     else
     {
+        printf("Entramos en AGREGAR INT al Stack\n");
         split(instruction, "-", instruction_parsed, 2);
         sscanf(instruction_parsed[1], "%d", &z);
         pusheye(z, stack, top);
@@ -105,10 +107,9 @@ int evaluate(char **code, int *pos, int *stack, int *top)
  */
 char **split(char *originStringPointer, char *delimiterStringPointer, char **resultArrayPointer, int size)
 {
-
+    printf("Entramos en Split\n");
     // Declaraciones
     char *tokenPointer;
-    char *token[LARGO];
     int i;
 
     i = 0;
@@ -116,6 +117,7 @@ char **split(char *originStringPointer, char *delimiterStringPointer, char **res
     // el puntero al token es distinto de nulo
     while ((i < size) && ((tokenPointer = strsep(&originStringPointer, delimiterStringPointer)) != NULL))
     {
+        printf("Entramos en Split-while\n");
         resultArrayPointer[i] = strdup(tokenPointer);
         printf("SPLIT: %s\n", tokenPointer);
 

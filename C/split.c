@@ -25,7 +25,7 @@ int main( ) {
     split(originString, " ", resultArray, LARGO);
 
     // Imprimo el array de strings para ver el resultado
-    for (i = 0; i < LARGO; i++){
+    for (i = 0; i < LARGO-1; i++){
         printf("String = %s", resultArray[i] );
         printf("\tAddress of string literal = %p\n", resultArray[i]);
     }
@@ -42,7 +42,6 @@ char** split(char * originStringPointer, char * delimiterStringPointer, char **r
     
     // Declaraciones
     char *tokenPointer;
-    char *token[LARGO];
     int  i;
 
     i = 0;

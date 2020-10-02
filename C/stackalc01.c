@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <string.h>
+
 #define LARGO 100
 
 // Declarar funciones
@@ -13,20 +13,6 @@ int div(int a, int b);
 int pusheye(int elem, int *stack, int *top);
 int popeye(int *stack, int *top);
 char *strsep(char **stringp, const char *delim);
-
-char *strsep(char **stringp, const char *delim)
-{
-    char *rv = *stringp;
-    if (rv)
-    {
-        *stringp += strcspn(*stringp, delim);
-        if (**stringp)
-            *(*stringp)++ = '\0';
-        else
-            *stringp = 0;
-    }
-    return rv;
-}
 
 /*
  * Main ej 2.2
@@ -79,7 +65,6 @@ void evaluate(char **code, int *pos, int *stack, int *top)
 {
     // Declarar variables
     char *instruction;
-    char *instruction_parsed[2];
     int a, b;
     // Agarra la intrucción en la pos
     instruction = code[*pos];
@@ -115,12 +100,11 @@ void evaluate(char **code, int *pos, int *stack, int *top)
     else
     {
         int z = 0;
-        printf("Entramos en ELSE %s\n", instruction);
-        /*split(instruction, "-", instruction_parsed, 2);*/
-        sscanf(instruction, "%d", &z);
+        printf("Entramos en ELSE para insertar valor en el stack: %s\n", instruction);
+        sscanf(instruction, "%d", &z); //castear el char a int usando sscanf
         pusheye(z, stack, top);
     }
-    *pos = *pos + 1;
+    *pos = *pos + 1; // avanzamos la pos a la siguiente instruccion en el codigo
 }
 
 /*
@@ -152,6 +136,29 @@ char **split(char *originStringPointer, char *delimiterStringPointer, char **res
     return resultArrayPointer;
 }
 
+/**
+ * Separa de un string un sub-string segun el delim dado
+ * Retorna un puntero al sub-string
+ * 
+ */
+char *strsep(char **stringp, const char *delim)
+{
+    char *rv = *stringp;
+    if (rv)
+    {
+        *stringp += strcspn(*stringp, delim);
+        if (**stringp)
+            *(*stringp)++ = '\0';
+        else
+            *stringp = 0;
+    }
+    return rv;
+}
+
+/**
+ * Inserta en el tope del stack un valor
+ * 
+ */
 int pusheye(int elem, int *stack, int *top)
 {
     *top = *top + 1;
@@ -159,6 +166,10 @@ int pusheye(int elem, int *stack, int *top)
     return 0;
 }
 
+/**
+ * Quita un valor del tope del stack y lo devuelve
+ *  
+ */
 int popeye(int *stack, int *top)
 {
     int res = stack[*top];
