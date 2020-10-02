@@ -5,7 +5,7 @@
 
 // Declarar funciones
 void evaluate(char **code, int *pos, int *stack, int *top);
-char **split(char *originStringPointer, char *delimiterStringPointer, char **resultArrayPointer, int size);
+char **split(char *originStringPointer, char *delimiterStringPointer, char **resultArrayPointer, int size, int *resultSize);
 int add(int a, int b);
 int sub(int a, int b);
 int mult(int a, int b);
@@ -34,21 +34,40 @@ char *strsep(char **stringp, const char *delim)
  */
 int main()
 {
+    //1 2 3 MULT ADD
+    //22 33 4 SUB MULT
     // Declarar var
-    int pos = 0, stack[LARGO], top = -1;
-    //printf("Introduce la secuencia de operaciones: ");
-    //fgets(texto, LARGO, stdin);
-
-    //https://www.tutorialspoint.com/c_standard_library/c_function_strtok.htm
-    //Splitea la oracion de acuerdo a un separador
-    char *code[LARGO] = {"1", "2", "3", "MULT", "ADD"};
-    int i = 0;
-
-    while (i < 5)
+    int stack[LARGO], top = -1;
+    char s[2] = " ";
+    while (1 == 1)
     {
-        evaluate(code, &pos, stack, &top);
-        printf("STACK: %d\n", *stack);
-        i++;
+        int maxI = 0;
+        int pos = 0;
+        char texto[LARGO];
+        char *code[LARGO];
+
+        printf("Introduce la secuencia de operaciones: ");
+        fgets(texto, LARGO, stdin);
+
+        int len = strlen(texto);
+        if (texto[len - 1] == '\n')
+        {
+            texto[len - 1] = 0;
+        }
+
+        split(texto, s, code, 5, &maxI);
+        int i = 0;
+        while (i < maxI)
+        {
+            evaluate(code, &pos, stack, &top);
+            i++;
+        }
+
+        printf("RESULT: %d\n", top);
+        for (int z = 0; z < top + 1; z++)
+        {
+            printf("STACK %d: %d\n", z, stack[z]);
+        }
     }
 }
 
@@ -84,7 +103,7 @@ void evaluate(char **code, int *pos, int *stack, int *top)
         printf("Entramos en SUB\n");
         a = popeye(stack, top);
         b = popeye(stack, top);
-        pusheye(a - b, stack, top);
+        pusheye(b - a, stack, top);
     }
     else if (strcmp("MULT", instruction) == 0)
     {
@@ -109,7 +128,7 @@ void evaluate(char **code, int *pos, int *stack, int *top)
  * el string.
  * Retorna un array con los tokens.
  */
-char **split(char *originStringPointer, char *delimiterStringPointer, char **resultArrayPointer, int size)
+char **split(char *originStringPointer, char *delimiterStringPointer, char **resultArrayPointer, int size, int *resultSize)
 {
 
     // Declaraciones
@@ -123,6 +142,7 @@ char **split(char *originStringPointer, char *delimiterStringPointer, char **res
     while ((i < size) && ((tokenPointer = strsep(&originStringPointer, delimiterStringPointer)) != NULL))
     {
         resultArrayPointer[i] = strdup(tokenPointer);
+        *resultSize = *resultSize + 1;
         printf("SPLIT: %s\n", tokenPointer);
 
         i++;
