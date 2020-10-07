@@ -216,7 +216,7 @@ void evaluate(char **code, int *pos, int *stack, int *top, int maxI, int *variab
                     b = popeye(stack, top);
                     pushBool(b >= a, stack, top);
                 }
-                else if (*top > 0 && strcmp("NOT", instruction) == 0)
+                else if (*top >= 0 && strcmp("NOT", instruction) == 0)
                 {
                     printf("Entramos en NOT\n");
                     a = popeye(stack, top);
@@ -240,17 +240,17 @@ void evaluate(char **code, int *pos, int *stack, int *top, int maxI, int *variab
                     b = popeye(stack, top);
                     pusheye(a || b, stack, top);
                 }
-                else if (*top > 0 && strcmp("POP", instruction) == 0)
+                else if (*top >= 0 && strcmp("POP", instruction) == 0)
                 {
                     printf("Entramos en POP\n");
                     a = popeye(stack, top);
                 }
-                else if (*top > 0 && strcmp("DUP", instruction) == 0)
+                else if (*top >= 0 && strcmp("DUP", instruction) == 0)
                 {
                     printf("Entramos en DUP\n");
                     a = popeye(stack, top);
-                    pusheye(a , stack, top);
-                    pusheye(a , stack, top);
+                    pusheye(a, stack, top);
+                    pusheye(a, stack, top);
                 } 
                 else if (
                     (strlen(instruction)>0 && instruction[0] == '-' && ++instruction && isdigit(*instruction) && --instruction) 
