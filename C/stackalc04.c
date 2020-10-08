@@ -39,6 +39,9 @@ int main()
     // 2 DIV 4 ADD = 8704
     // 45 20 45450 37 25 108 25 35 12 SUB MULT ADD DIV ADD ADD SUB ADD = -45422
 
+    // 7 DUP 1 SET:0 SET:1
+    // GET:1 1 LT CJP+10 GET:1 GET:0 MULT SET:0 GET:1 1 SUB SET:1 UJP-12 GET:0
+    
     // Declarar vars
     int stack[LARGO], top = -1, variables[VARIABLES];
     char s[2] = " ";
@@ -64,11 +67,9 @@ int main()
         }
 
         split(texto, s, code, LARGO, &maxI);
-        int i = 0;
-        while (i < maxI)
+        while (pos < maxI)
         {
             evaluate(code, &pos, stack, &top, maxI, variables);
-            i++;
         }
 
         printf("STACK TOP: %d\n", top);
@@ -108,7 +109,6 @@ void evaluate(char **code, int *pos, int *stack, int *top, int maxI, int *variab
                 dupped = strdup(instruction);
                 split(dupped, "+-", out, LARGO, &size);
                 sscanf(out[1], "%d", &salto);
-                salto += 1;
                 if(strcmp("UJP", out[0]) == 0){
                     printf("Entramos en UJP\n");
                     if(instruction[3] == '-'){
@@ -119,12 +119,14 @@ void evaluate(char **code, int *pos, int *stack, int *top, int maxI, int *variab
                 } else if(strcmp("CJP", out[0]) == 0){
                     printf("Entramos en CJP\n");
                     a = popeye(stack, top);
-                    if (a != 0 ){
+                    if (a != 0){
                         if(instruction[3] == '-'){
                             *pos = *pos - salto;
                         } else {
                             *pos = *pos + salto;
                         }
+                    } else {
+                        *pos = *pos + 1;
                     }
                 }  
             }
