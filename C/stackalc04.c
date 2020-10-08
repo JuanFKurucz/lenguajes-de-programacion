@@ -61,6 +61,11 @@ int main()
         fgets(texto, LARGO, stdin);
 
         int len = strlen(texto);
+        
+        if(len==1 && texto[len - 1] == '\n'){
+            break;
+        }
+        
         if (texto[len - 1] == '\n')
         {
             texto[len - 1] = 0;
@@ -72,16 +77,14 @@ int main()
             evaluate(code, &pos, stack, &top, maxI, variables);
         }
 
-        printf("STACK TOP: %d\n", top);
-        printf("CODE POS: %d\n", pos);
+        //printf("STACK TOP: %d\n", top);
+        //printf("CODE POS: %d\n", pos);
         for (int z = 0; z < top + 1; z++)
         {
-            printf("STACK %d: %d\n", z, stack[z]);
-        }
-        for (int z = 0; z < VARIABLES; z++)
-        {
-            printf("VARIABLES %d: %d\n", z, variables[z]);
-        }
+            //printf("STACK %d: %d\n", z, stack[z]);
+            printf("%d ", stack[z]);
+        }        
+        printf("| 0:%d 1:%d 2:%d 3:%d 4:%d\n", variables[0], variables[1], variables[2], variables[3], variables[4]);
     }
 }
 
@@ -110,14 +113,14 @@ void evaluate(char **code, int *pos, int *stack, int *top, int maxI, int *variab
                 split(dupped, "+-", out, LARGO, &size);
                 sscanf(out[1], "%d", &salto);
                 if(strcmp("UJP", out[0]) == 0){
-                    printf("Entramos en UJP\n");
+                    //printf("Entramos en UJP\n");
                     if(instruction[3] == '-'){
                         *pos = *pos - salto;
                     } else {
                         *pos = *pos + salto;
                     }
                 } else if(strcmp("CJP", out[0]) == 0){
-                    printf("Entramos en CJP\n");
+                    //printf("Entramos en CJP\n");
                     a = popeye(stack, top);
                     if (a != 0){
                         if(instruction[3] == '-'){
@@ -149,7 +152,7 @@ void evaluate(char **code, int *pos, int *stack, int *top, int maxI, int *variab
             } else { 
                 if (*top > 0 && strcmp("ADD", instruction) == 0)
                 {
-                    printf("Entramos en ADD\n");
+                    //printf("Entramos en ADD\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     // chequear que a y b tengan valores
@@ -157,70 +160,70 @@ void evaluate(char **code, int *pos, int *stack, int *top, int maxI, int *variab
                 }
                 else if (*top > 0 && strcmp("DIV", instruction) == 0)
                 {
-                    printf("Entramos en DIV\n");
+                    //printf("Entramos en DIV\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pusheye(b / a, stack, top);
                 }
                 else if (*top > 0 && strcmp("SUB", instruction) == 0)
                 {
-                    printf("Entramos en SUB\n");
+                    //printf("Entramos en SUB\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pusheye(b - a, stack, top);
                 }
                 else if (*top > 0 && strcmp("MULT", instruction) == 0)
                 {
-                    printf("Entramos en MULT\n");
+                    //printf("Entramos en MULT\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pusheye(a * b, stack, top);
                 }
                 else if (*top > 0 && strcmp("EQ", instruction) == 0)
                 {
-                    printf("Entramos en EQ\n");
+                    //printf("Entramos en EQ\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pushBool(a == b, stack, top);
                 }
                 else if (*top > 0 && strcmp("DIFF", instruction) == 0)
                 {
-                    printf("Entramos en DIFF\n");
+                    //printf("Entramos en DIFF\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pushBool(a != b, stack, top);
                 }
                 else if (*top > 0 && strcmp("LT", instruction) == 0)
                 {
-                    printf("Entramos en LT\n");
+                    //printf("Entramos en LT\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pushBool(b < a, stack, top);
                 }
                 else if (*top > 0 && strcmp("LTE", instruction) == 0)
                 {
-                    printf("Entramos en LTE\n");
+                    //printf("Entramos en LTE\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pushBool(b <= a, stack, top);
                 }
                 else if (*top > 0 && strcmp("GT", instruction) == 0)
                 {
-                    printf("Entramos en GT\n");
+                    //printf("Entramos en GT\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pushBool(b > a, stack, top);
                 }
                 else if (*top > 0 && strcmp("GTE", instruction) == 0)
                 {
-                    printf("Entramos en GTE\n");
+                    //printf("Entramos en GTE\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pushBool(b >= a, stack, top);
                 }
                 else if (*top >= 0 && strcmp("NOT", instruction) == 0)
                 {
-                    printf("Entramos en NOT\n");
+                    //printf("Entramos en NOT\n");
                     a = popeye(stack, top);
                     if(a != 0){
                         pushBool(FALSE, stack, top);
@@ -230,26 +233,26 @@ void evaluate(char **code, int *pos, int *stack, int *top, int maxI, int *variab
                 }
                 else if (*top > 0 && strcmp("AND", instruction) == 0)
                 {
-                    printf("Entramos en AND\n");
+                    //printf("Entramos en AND\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pushBool(a && b, stack, top);
                 }
                 else if (*top > 0 && strcmp("OR", instruction) == 0)
                 {
-                    printf("Entramos en OR\n");
+                    //printf("Entramos en OR\n");
                     a = popeye(stack, top);
                     b = popeye(stack, top);
                     pusheye(a || b, stack, top);
                 }
                 else if (*top >= 0 && strcmp("POP", instruction) == 0)
                 {
-                    printf("Entramos en POP\n");
+                    //printf("Entramos en POP\n");
                     a = popeye(stack, top);
                 }
                 else if (*top >= 0 && strcmp("DUP", instruction) == 0)
                 {
-                    printf("Entramos en DUP\n");
+                    //printf("Entramos en DUP\n");
                     a = popeye(stack, top);
                     pusheye(a, stack, top);
                     pusheye(a, stack, top);
@@ -260,7 +263,7 @@ void evaluate(char **code, int *pos, int *stack, int *top, int maxI, int *variab
                 )
                 {
                     int z = 0;
-                    printf("Entramos en ELSE para insertar valor en el stack: %s\n", instruction);
+                    //printf("Entramos en ELSE para insertar valor en el stack: %s\n", instruction);
                     sscanf(instruction, "%d", &z); //castear el char a int usando sscanf
                     pusheye(z, stack, top);
                 }
@@ -290,7 +293,7 @@ char **split(char *originStringPointer, char *delimiterStringPointer, char **res
     {
         resultArrayPointer[i] = strdup(tokenPointer);
         *resultSize = *resultSize + 1;
-        printf("SPLIT: %s\n", tokenPointer);
+        //printf("SPLIT: %s\n", tokenPointer);
 
         i++;
     }
