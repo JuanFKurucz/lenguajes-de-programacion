@@ -28,19 +28,11 @@ char *strsep(char **stringp, const char *delim);
 int main()
 {
     // CASOS DE PRUEBA
-    // 1 2 3 MULT ADD = 7 
-    // 22 33 4 SUB MULT = 638
-    // 1 10 5 DIV ADD = 3
-    // 10 2 10 5 DIV ADD MULT = 40
-    // 5 5 5 5 5 1 SUB MULT ADD DIV ADD = 5
-    // MULT ADD SUB = 435
-    // 25 10 4 8 9 3 ADD SUB ADD MULT ADD = 25
-    // 15 ADD MULT = 17400
-    // 2 DIV 4 ADD = 8704
-    // 45 20 45450 37 25 108 25 35 12 SUB MULT ADD DIV ADD ADD SUB ADD = -45422
+    // Casos de prueba ejecutarlos uno a continuacion del otro sin cortar la ejecucion del programa
+    // 7 DUP 1 SET:0 SET:1 GET:1 1 LT CJP+10 GET:1 GET:0 MULT SET:0 GET:1 1 SUB SET:1 UJP-12 GET:0 = 7 5040 | 0:5040 1:0 2:0 3:0 4:0
+    // 1 SET:0 5 SET:1 1 SET:2 GET:1 GET:0 LT CJP+10 GET:2 GET:0 MULT SET:2 GET:0 1 ADD SET:0 UJP-12 GET:2 = 7 5040 120 | 0:6 1:5 2:120 3:0 4:0
+    // DIV SET:3 SET:4 GET:3 GET:4 LT CJP+06 GET:3 2 DIV SET:3 UJP-07 GET:3 = 21 | 0:6 1:5 2:120 3:21 4:7
 
-    // 7 DUP 1 SET:0 SET:1
-    // GET:1 1 LT CJP+10 GET:1 GET:0 MULT SET:0 GET:1 1 SUB SET:1 UJP-12 GET:0
     
     // Declarar vars
     int stack[LARGO], top = -1, variables[VARIABLES];
