@@ -8,7 +8,7 @@ Javier Martin
 #include <string.h>
 #include <ctype.h>
 
-#define LARGO 100
+#define LARGO 200
 #define TRUE 1
 #define FALSE 0
 #define VARIABLES 5
@@ -53,15 +53,15 @@ int main()
         fgets(texto, LARGO, stdin);
 
         int len = strlen(texto);
-        
-        if(len==1 && texto[len - 1] == '\n'){
-            break;
-        }
-        
         if (texto[len - 1] == '\n')
         {
-            texto[len - 1] = 0;
+            texto[len - 1] = '\0';
         }
+ 
+        if(len==1 && texto[len - 1] == '\0'){
+            break;
+        }
+
 
         split(texto, s, code, LARGO, &maxI);
         while (pos < maxI)
