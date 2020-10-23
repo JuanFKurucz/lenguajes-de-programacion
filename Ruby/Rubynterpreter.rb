@@ -208,6 +208,17 @@ class OurWhile < Stmt
     end
 end
 
+class Sequence < Stmt
+    def initialize(first, second)
+        @first = first
+        @second = second
+    end 
+    def evaluate(state)
+        @first.evaluate(state)
+        @second.evaluate(state)
+    end
+end
+
 class Print < Stmt
     def initialize(elem)
         @elem = elem
@@ -267,6 +278,10 @@ if __FILE__ == $0
 
     puts IfThenElse.new(OurTrue.new(),Num.new(1),Num.new(2)).evaluate(state)
     puts IfThenElse.new(OurFalse.new(),Num.new(1),Num.new(2)).evaluate(state)
+
+    var_seq = Var.new("seq",state)
+    puts Sequence.new(Assign.new(var_seq, Num.new(2)),Assign.new(var_seq,Add.new(var_seq,Num.new(1)))).evaluate(state)
+    puts state
 
     #var_x = Var.new("x",state)
     #puts Assign.new(var_x, Num.new(77)).evaluate(state)
