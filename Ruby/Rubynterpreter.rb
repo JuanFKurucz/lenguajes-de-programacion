@@ -140,6 +140,22 @@ class IfThen < OpBin
     end
 end
 
+
+class IfThenElse < Exp
+    def initialize(cond, ifTrue, ifFalse)
+        @cond = cond
+        @ifTrue = ifTrue
+        @ifFalse = ifFalse
+    end
+    def evaluate(state)
+        if @cond.evaluate(state)
+            @ifTrue.evaluate(state)
+        else
+            @ifFalse.evaluate(state)
+        end
+    end
+end
+
 class OurTrue < Exp
     def initialize()
         @n = true
@@ -248,6 +264,9 @@ if __FILE__ == $0
     puts state
     IfThen.new(OurOr.new(CompLTE.new(var_oposdiv,var_div),OurTrue.new()),Assign.new(var_oposdiv, Add.new(var_oposdiv,Num.new(1)))).evaluate(state)
     puts state
+
+    puts IfThenElse.new(OurTrue.new(),Num.new(1),Num.new(2)).evaluate(state)
+    puts IfThenElse.new(OurFalse.new(),Num.new(1),Num.new(2)).evaluate(state)
 
     #var_x = Var.new("x",state)
     #puts Assign.new(var_x, Num.new(77)).evaluate(state)
