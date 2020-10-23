@@ -95,7 +95,7 @@ class CompLT < OpBin
     end
 end
 
-class CompGt < OpBin
+class CompGT < OpBin
     def evaluate(state)
         @left.evaluate(state) > @right.evaluate(state)
     end
@@ -107,7 +107,7 @@ class CompLTE < OpBin
     end
 end
 
-class CompGtE < OpBin
+class CompGTE < OpBin
     def evaluate(state)
         @left.evaluate(state) >= @right.evaluate(state)
     end
@@ -230,9 +230,9 @@ if __FILE__ == $0
     Assign.new(var_oposdiv, Opos.new(var_div)).evaluate(state)
     puts state
     Print.new(CompLT.new(var_oposdiv,var_div)).evaluate(state)
-    Print.new(CompGt.new(var_oposdiv,var_div)).evaluate(state)
+    Print.new(CompGT.new(var_oposdiv,var_div)).evaluate(state)
     Print.new(CompLTE.new(var_oposdiv,var_div)).evaluate(state)
-    Print.new(CompGtE.new(var_oposdiv,var_div)).evaluate(state)
+    Print.new(CompGTE.new(var_oposdiv,var_div)).evaluate(state)
     Print.new(Eq.new(var_oposdiv,var_div)).evaluate(state)
     Print.new(Dif.new(var_oposdiv,var_div)).evaluate(state)
 
@@ -244,6 +244,10 @@ if __FILE__ == $0
     OurWhile.new(CompLTE.new(var_oposdiv,var_div),Assign.new(var_oposdiv, Add.new(var_oposdiv,Num.new(1)))).evaluate(state)
     puts state
 
+    IfThen.new(OurAnd.new(CompGT.new(var_oposdiv,var_div),OurTrue.new()),Assign.new(var_oposdiv, Add.new(var_oposdiv,Num.new(1)))).evaluate(state)
+    puts state
+    IfThen.new(OurOr.new(CompLTE.new(var_oposdiv,var_div),OurTrue.new()),Assign.new(var_oposdiv, Add.new(var_oposdiv,Num.new(1)))).evaluate(state)
+    puts state
 
     #var_x = Var.new("x",state)
     #puts Assign.new(var_x, Num.new(77)).evaluate(state)
