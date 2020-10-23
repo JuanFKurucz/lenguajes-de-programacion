@@ -15,6 +15,7 @@ class Stmt
 end
 
 class Num < Exp
+    attr_reader :value
     def initialize(n)
         @value = Float(n)
     end
@@ -25,7 +26,6 @@ end
 
 class Var < Exp
     attr_reader :value
-
     def initialize(value)
         @value = value
     end
@@ -35,6 +35,7 @@ class Var < Exp
 end
 
 class OpBin < Exp
+    attr_reader :left, :right
     def initialize(left, right)
         @left = left
         @right = right
@@ -42,12 +43,14 @@ class OpBin < Exp
 end
 
 class OpUni < Exp
+    attr_reader :elem
     def initialize(elem)
         @elem = elem
     end
 end
 
 class Assign < Stmt
+    attr_reader :ref, :exp
     def initialize(ref, exp)
         @ref = ref
         @exp = exp
@@ -126,12 +129,14 @@ end
 
 class OurRandom < Num
     # Stalin Approves
+    attr_reader :value
     def initialize()
         @value = rand()
     end
 end
 
 class IfThenElse < Stmt
+    attr_reader :cond, :ifTrue, :ifFalse
     def initialize(cond, ifTrue, ifFalse)
         @cond = cond
         @ifTrue = ifTrue
@@ -149,6 +154,7 @@ class IfThenElse < Stmt
 end
 
 class IfThen < IfThenElse
+    attr_reader :cond, :ifTrue, :ifFalse
     def initialize(cond, ifTrue)
         @cond = cond
         @ifTrue = ifTrue
@@ -189,6 +195,7 @@ class Neg < OpUni
 end
 
 class OurWhile < Stmt
+    attr_reader :cond, :bondy
     def initialize(cond, body)
         @cond = cond
         @body = body
@@ -202,6 +209,7 @@ class OurWhile < Stmt
 end
 
 class Sequence < Stmt
+    attr_reader :statements
     def initialize(statements)
         @statements = statements
     end 
@@ -209,10 +217,12 @@ class Sequence < Stmt
         @statements.each do |statement| 
             statement.evaluate(state)
         end
+        state
     end
 end
 
 class Print < Stmt
+    attr_reader :elem
     def initialize(elem)
         @elem = elem
     end 
