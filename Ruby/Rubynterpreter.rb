@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'test/unit'
+
 class Exp
     def evaluate(state)
         puts "Default Evaluate in Exp"
@@ -229,7 +231,6 @@ class Print < Stmt
 end
 
 if __FILE__ == $0
-    puts "Hi"
     state = Hash.new
     number_3 = Num.new(3)
     number_2 = Num.new(2)
@@ -237,57 +238,103 @@ if __FILE__ == $0
     var_2 = Var.new("two",state)
     Assign.new(var_3, number_3).evaluate(state)
     Assign.new(var_2, number_2).evaluate(state)
-    puts state
+    puts "1 - {\"one\"=>3.0, \"two\"=>2.0}:\n #{state}"
+    
     var_mult = Var.new("mult",state)
     Assign.new(var_mult, Mult.new(var_2,var_3)).evaluate(state)
-    puts state
+    puts "2 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0}:\n #{state}"
+    
     var_sub = Var.new("sub",state)
     Assign.new(var_sub, Sub.new(var_3,var_2)).evaluate(state)
-    puts state
+    puts "3 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0, \"sub\"=>1.0}:\n #{state}"
+    
     var_nsub = Var.new("-sub",state)
     Assign.new(var_nsub, Sub.new(var_2,var_3)).evaluate(state)
-    puts state
+    puts "4 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0, \"sub\"=>1.0, \"-sub\"=>-1.0}:\n #{state}"
+    
     var_zero = Var.new("zero",state)
     Assign.new(var_zero, Add.new(var_nsub,var_sub)).evaluate(state)
-    puts state
+    puts "5 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0, \"sub\"=>1.0, \"-sub\"=>-1.0, \"zero\"=>0.0}:\n #{state}"
+    
     var_div = Var.new("div",state)
     Assign.new(var_div, Div.new(var_mult,var_2)).evaluate(state)
-    puts state
+    puts "6 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0, \"sub\"=>1.0, \"-sub\"=>-1.0, \"zero\"=>0.0, \"div\"=>3.0}:\n #{state}"
+
     var_oposdiv = Var.new("oposdiv",state)
     Assign.new(var_oposdiv, Opos.new(var_div)).evaluate(state)
-    puts state
+    puts "7 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0, \"sub\"=>1.0, \"-sub\"=>-1.0, \"zero\"=>0.0, \"div\"=>3.0, \"oposdiv\"=>-3.0}:\n #{state}"
+
+    puts "8.1 - (-3 < 3)? - Print : true"
     Print.new(CompLT.new(var_oposdiv,var_div)).evaluate(state)
+    
+    puts "8.2 - (3 < 3)? - Print : false"
+    Print.new(CompLT.new(var_div,var_div)).evaluate(state)
+    
+    puts "9.1 - (3 > -3)? - Print : true"
+    Print.new(CompGT.new(var_div,var_oposdiv)).evaluate(state)
+    
+    puts "9.2 - (-3 > 3)? - Print : false"
     Print.new(CompGT.new(var_oposdiv,var_div)).evaluate(state)
+    
+    puts "10.1 - (-3 <= 3)? - Print : true"
     Print.new(CompLTE.new(var_oposdiv,var_div)).evaluate(state)
+    
+    puts "10.2 - (3 <= -3)? - Print : false"
+    Print.new(CompLTE.new(var_div,var_oposdiv)).evaluate(state)
+    
+    puts "11.1 - (3 >= 3)? - Print : true"
+    Print.new(CompGTE.new(var_div,var_div)).evaluate(state)
+    
+    puts "11.2 - (-3 >= 3)? - Print : false"
     Print.new(CompGTE.new(var_oposdiv,var_div)).evaluate(state)
+    
+    puts "12.1 - (3 = 3)? - Print : true"
+    Print.new(Eq.new(var_div,var_div)).evaluate(state)
+    
+    puts "12.2 - (-3 = 3)? - Print : false"
     Print.new(Eq.new(var_oposdiv,var_div)).evaluate(state)
+    
+    puts "13.1 - (-3 != 3)? - Print : true"
     Print.new(Dif.new(var_oposdiv,var_div)).evaluate(state)
-
+    
+    puts "13.2 - (3 != 3)? - Print : false"
+    Print.new(Dif.new(var_div,var_div)).evaluate(state)
+    
+    puts "14 - RANDOM 0 < x < 1 - Print : algorandom..."
     Print.new(OurRandom.new()).evaluate(state)
+    
+    puts "15.1 - BOOLEANO - Print : true"
     Print.new(OurTrue.new()).evaluate(state)
+    
+    puts "15.2 - BOOLEANO - Print : false"
     Print.new(OurFalse.new()).evaluate(state)
+    
+    puts "16.1 - NEG BOOLEANO FALSE - Print : true"
     Print.new(Neg.new(OurFalse.new())).evaluate(state)
-    puts state
+    
+    puts "16.2 - NEG BOOLEANO TRUE- Print : false"
+    Print.new(Neg.new(OurTrue.new())).evaluate(state)
+    
+    puts "18.1 - WHILE (-3 <= 3) oposdiv + 1 - before state : #{state}"
     OurWhile.new(CompLTE.new(var_oposdiv,var_div),Assign.new(var_oposdiv, Add.new(var_oposdiv,Num.new(1)))).evaluate(state)
-    puts state
-
+    puts "18.2 - WHILE after state oposdiv = 4 : #{state}"
+    
+    puts "19.1 - IFTHEN (AND): "
     IfThen.new(OurAnd.new(CompGT.new(var_oposdiv,var_div),OurTrue.new()),Assign.new(var_oposdiv, Add.new(var_oposdiv,Num.new(1)))).evaluate(state)
-    puts state
+    puts "19.2 state : #{state}"
+    
+    puts "20.1 - IFTHEN (OR): "
     IfThen.new(OurOr.new(CompLTE.new(var_oposdiv,var_div),OurTrue.new()),Assign.new(var_oposdiv, Add.new(var_oposdiv,Num.new(1)))).evaluate(state)
-    puts state
-
+    puts "20.2 state : #{state}"
+    
+    puts "21 - IF THEN ELSE: Print: 1.0"
     Print.new(IfThenElse.new(OurTrue.new(),Num.new(1),Num.new(2))).evaluate(state)
+    
+    puts "22 - IF THEN ELSE: Print: 2.0 "
     Print.new(IfThenElse.new(OurFalse.new(),Num.new(1),Num.new(2))).evaluate(state)
-
+    
+    puts "23.1 - SEQUENCE: Print: 3.0 "
     var_seq = Var.new("seq",state)
     Print.new(Sequence.new(Assign.new(var_seq, Num.new(2)),Assign.new(var_seq,Add.new(var_seq,Num.new(1))))).evaluate(state)
-    puts state
-
-    var_x = Var.new("x",state)
-    Print.new(Assign.new(var_x, Num.new(77))).evaluate(state)
-    puts state
-    ass_x = Assign.new(var_x, Opos.new(var_x))
-    Print.new(ass_x).evaluate(state)
-    Print.new(IfThen.new(CompLT.new(var_x,Num.new(0)),ass_x)).evaluate(state)
-    puts state 
+    puts "23.2 END STATE: #{state}"
 end
