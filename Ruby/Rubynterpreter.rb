@@ -19,11 +19,13 @@ class Num < Exp
         @names = Float(n)
     end
     def evaluate(state)
-        state[@names]       
+        @names
     end
 end
 
 class Var < Exp
+    attr_reader :names
+
     def initialize(names,state)
         @names = names
         state[@names] = nil
@@ -47,12 +49,15 @@ class OpUni < Exp
 end
 
 class Assign < Stmt
+    def initialize(ref, exp)
+        @ref = ref
+        @exp = exp
+    end
     def evaluate(state)
         state[@ref.names] = @exp.evaluate(state)
         state
     end
 end
-
 
 class Mult < OpBin
     def evaluate(state)
@@ -84,40 +89,39 @@ class Opos < OpUni
     end
 end
 
-
 class CompLT < OpBin
     def evaluate(state) 
-        @left.evaluate(state) < @right.valuate(state)
+        @left.evaluate(state) < @right.evaluate(state)
     end
 end
 
 class CompGt < OpBin
     def evaluate(state)
-        @left.evaluate(state) > @right.valuate(state)
+        @left.evaluate(state) > @right.evaluate(state)
     end
 end
 
 class CompLTE < OpBin
     def evaluate(state) 
-        @left.evaluate(state) <= @right.valuate(state)
+        @left.evaluate(state) <= @right.evaluate(state)
     end
 end
 
 class CompGtE < OpBin
     def evaluate(state)
-        @left.evaluate(state) >= @right.valuate(state)
+        @left.evaluate(state) >= @right.evaluate(state)
     end
 end
 
 class Eq < OpBin
     def evaluate(state) 
-        @left.evaluate(state) == @right.valuate(state)
+        @left.evaluate(state) == @right.evaluate(state)
     end
 end
 
 class Dif < OpBin
     def evaluate(state) 
-        @left.evaluate(state) != @right.valuate(state)
+        @left.evaluate(state) != @right.evaluate(state)
     end
 end
 
@@ -128,7 +132,7 @@ class OurRandom < Num
     end
 end
 
-class IfThen < Stmt
+class IfThen < OpBin
     def evaluate(state)
         if @left.evaluate(state)
             @right.evaluate(state)
@@ -137,7 +141,7 @@ class IfThen < Stmt
 end
 
 class OurTrue < Exp
-    def initialize(n)
+    def initialize()
         @n = true
     end
     def evaluate(state)
@@ -146,7 +150,7 @@ class OurTrue < Exp
 end
 
 class OurFalse < Exp
-    def initialize(n)
+    def initialize()
         @n = false
     end
     def evaluate(state)
@@ -156,19 +160,19 @@ end
 
 class OurAnd < OpBin
     def evaluate(state) 
-        @left.evaluate(state) && @right.valuate(state)
+        @left.evaluate(state) && @right.evaluate(state)
     end
 end
 
 class OurOr < OpBin
     def evaluate(state) 
-        @left.evaluate(state) || @right.valuate(state)
+        @left.evaluate(state) || @right.evaluate(state)
     end
 end
 
 class Neg < OpUni
-    def evaluate()
-        !@elem.evaluate
+    def evaluate(state)
+        !@elem.evaluate(state)
     end
 end
 
@@ -194,14 +198,52 @@ end
 
 if __FILE__ == $0
     puts "Hi"
-    # state = Hash.new
-    # var_x = Var.new("x",state)
-    # Assign.new(var_x, Num.new(77)).evaluate(state)
+    state = Hash.new
+    number_3 = Num.new(3)
+    number_2 = Num.new(2)
+    var_3 = Var.new("one",state)
+    var_2 = Var.new("two",state)
+    Assign.new(var_3, number_3).evaluate(state)
+    Assign.new(var_2, number_2).evaluate(state)
+    puts state
+    var_mult = Var.new("mult",state)
+    Assign.new(var_mult, Mult.new(var_2,var_3)).evaluate(state)
+    puts state
+    var_sub = Var.new("sub",state)
+    Assign.new(var_sub, Sub.new(var_3,var_2)).evaluate(state)
+    puts state
+    var_nsub = Var.new("-sub",state)
+    Assign.new(var_nsub, Sub.new(var_2,var_3)).evaluate(state)
+    puts state
+    var_zero = Var.new("zero",state)
+    Assign.new(var_zero, Add.new(var_nsub,var_sub)).evaluate(state)
+    puts state
+    var_div = Var.new("div",state)
+    Assign.new(var_div, Div.new(var_mult,var_2)).evaluate(state)
+    puts state
+    var_oposdiv = Var.new("oposdiv",state)
+    Assign.new(var_oposdiv, Opos.new(var_div)).evaluate(state)
+    puts state
+    puts CompLT.new(var_oposdiv,var_div).evaluate(state)
+    puts CompGt.new(var_oposdiv,var_div).evaluate(state)
+    puts CompLTE.new(var_oposdiv,var_div).evaluate(state)
+    puts CompGtE.new(var_oposdiv,var_div).evaluate(state)
+    puts Eq.new(var_oposdiv,var_div).evaluate(state)
+    puts Dif.new(var_oposdiv,var_div).evaluate(state)
+
+    puts OurRandom.new().evaluate(state)
+    puts OurTrue.new().evaluate(state)
+    puts OurFalse.new().evaluate(state)
+    puts Neg.new(OurFalse.new()).evaluate(state)
+
+
+    #var_x = Var.new("x",state)
+    #puts Assign.new(var_x, Num.new(77)).evaluate(state)
     # puts state
-    # ass_x = Assign.new(var_x, UMinus.new(var_x))
+    # ass_x = Assign.new(var_x, Opos.new(var_x))
     # puts ass_x
     # ass_ex_state = ass_x.evaluate(state)
     # puts ass_ex_state
-    # IfThen.new(CompLT.new(var_x,Num.new(0)).ass_x).evaluate(state)
+    # IfThen.new(CompLT.new(var_x,Num.new(0)),ass_x).evaluate(state)
     # puts state 
 end
