@@ -188,12 +188,17 @@ class OurWhile < Stmt
         end
     end        
     def evaluate(state)
-        iteration(state, @cond, @body)
+        iteration(@cond, @body, state)
     end
 end
 
 class Print < Stmt
-    puts "Print : #{@elem}"
+    def initialize(elem)
+        @elem = elem
+    end 
+    def evaluate(state)
+        puts "Print : #{@elem.evaluate(state)}"
+    end
 end
 
 if __FILE__ == $0
@@ -224,17 +229,20 @@ if __FILE__ == $0
     var_oposdiv = Var.new("oposdiv",state)
     Assign.new(var_oposdiv, Opos.new(var_div)).evaluate(state)
     puts state
-    puts CompLT.new(var_oposdiv,var_div).evaluate(state)
-    puts CompGt.new(var_oposdiv,var_div).evaluate(state)
-    puts CompLTE.new(var_oposdiv,var_div).evaluate(state)
-    puts CompGtE.new(var_oposdiv,var_div).evaluate(state)
-    puts Eq.new(var_oposdiv,var_div).evaluate(state)
-    puts Dif.new(var_oposdiv,var_div).evaluate(state)
+    Print.new(CompLT.new(var_oposdiv,var_div)).evaluate(state)
+    Print.new(CompGt.new(var_oposdiv,var_div)).evaluate(state)
+    Print.new(CompLTE.new(var_oposdiv,var_div)).evaluate(state)
+    Print.new(CompGtE.new(var_oposdiv,var_div)).evaluate(state)
+    Print.new(Eq.new(var_oposdiv,var_div)).evaluate(state)
+    Print.new(Dif.new(var_oposdiv,var_div)).evaluate(state)
 
-    puts OurRandom.new().evaluate(state)
-    puts OurTrue.new().evaluate(state)
-    puts OurFalse.new().evaluate(state)
-    puts Neg.new(OurFalse.new()).evaluate(state)
+    Print.new(OurRandom.new()).evaluate(state)
+    Print.new(OurTrue.new()).evaluate(state)
+    Print.new(OurFalse.new()).evaluate(state)
+    Print.new(Neg.new(OurFalse.new())).evaluate(state)
+    puts state
+    OurWhile.new(CompLTE.new(var_oposdiv,var_div),Assign.new(var_oposdiv, Add.new(var_oposdiv,Num.new(1)))).evaluate(state)
+    puts state
 
 
     #var_x = Var.new("x",state)
