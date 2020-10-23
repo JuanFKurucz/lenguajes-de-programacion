@@ -283,13 +283,13 @@ if __FILE__ == $0
     puts Sequence.new(Assign.new(var_seq, Num.new(2)),Assign.new(var_seq,Add.new(var_seq,Num.new(1)))).evaluate(state)
     puts state
 
-    #var_x = Var.new("x",state)
-    #puts Assign.new(var_x, Num.new(77)).evaluate(state)
-    # puts state
-    # ass_x = Assign.new(var_x, Opos.new(var_x))
-    # puts ass_x
-    # ass_ex_state = ass_x.evaluate(state)
-    # puts ass_ex_state
-    # IfThen.new(CompLT.new(var_x,Num.new(0)),ass_x).evaluate(state)
-    # puts state 
+    var_x = Var.new("x",state)
+    puts Assign.new(var_x, Num.new(77)).evaluate(state)
+    puts state
+    ass_x = Assign.new(var_x, Opos.new(var_x))
+    puts ass_x
+    ass_ex_state = ass_x.evaluate(state)
+    puts ass_ex_state
+    IfThen.new(CompLT.new(var_x,Num.new(0)),ass_x).evaluate(state)
+    puts state 
 end
