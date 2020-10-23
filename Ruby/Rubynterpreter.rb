@@ -276,20 +276,18 @@ if __FILE__ == $0
     IfThen.new(OurOr.new(CompLTE.new(var_oposdiv,var_div),OurTrue.new()),Assign.new(var_oposdiv, Add.new(var_oposdiv,Num.new(1)))).evaluate(state)
     puts state
 
-    puts IfThenElse.new(OurTrue.new(),Num.new(1),Num.new(2)).evaluate(state)
-    puts IfThenElse.new(OurFalse.new(),Num.new(1),Num.new(2)).evaluate(state)
+    Print.new(IfThenElse.new(OurTrue.new(),Num.new(1),Num.new(2))).evaluate(state)
+    Print.new(IfThenElse.new(OurFalse.new(),Num.new(1),Num.new(2))).evaluate(state)
 
     var_seq = Var.new("seq",state)
-    puts Sequence.new(Assign.new(var_seq, Num.new(2)),Assign.new(var_seq,Add.new(var_seq,Num.new(1)))).evaluate(state)
+    Print.new(Sequence.new(Assign.new(var_seq, Num.new(2)),Assign.new(var_seq,Add.new(var_seq,Num.new(1))))).evaluate(state)
     puts state
 
     var_x = Var.new("x",state)
-    puts Assign.new(var_x, Num.new(77)).evaluate(state)
+    Print.new(Assign.new(var_x, Num.new(77))).evaluate(state)
     puts state
     ass_x = Assign.new(var_x, Opos.new(var_x))
-    puts ass_x
-    ass_ex_state = ass_x.evaluate(state)
-    puts ass_ex_state
-    IfThen.new(CompLT.new(var_x,Num.new(0)),ass_x).evaluate(state)
+    Print.new(ass_x).evaluate(state)
+    Print.new(IfThen.new(CompLT.new(var_x,Num.new(0)),ass_x)).evaluate(state)
     puts state 
 end
