@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
-
 class Exp
     def evaluate(state)
         puts "Default Evaluate in Exp"
@@ -18,22 +16,21 @@ end
 
 class Num < Exp
     def initialize(n)
-        @names = Float(n)
+        @value = Float(n)
     end
     def evaluate(state)
-        @names
+        @value
     end
 end
 
 class Var < Exp
-    attr_reader :names
+    attr_reader :value
 
-    def initialize(names,state)
-        @names = names
-        state[@names] = nil
+    def initialize(value)
+        @value = value
     end
     def evaluate(state)
-        state[@names]
+        state[@value]
     end
 end
 
@@ -56,7 +53,7 @@ class Assign < Stmt
         @exp = exp
     end
     def evaluate(state)
-        state[@ref.names] = @exp.evaluate(state)
+        state[@ref.value] = @exp.evaluate(state)
         state
     end
 end
@@ -128,22 +125,13 @@ class Dif < OpBin
 end
 
 class OurRandom < Num
-    #sounds like communism propaganda but ok
+    # Stalin Approves
     def initialize()
-        @names = rand()
+        @value = rand()
     end
 end
 
-class IfThen < OpBin
-    def evaluate(state)
-        if @left.evaluate(state)
-            @right.evaluate(state)
-        end
-    end
-end
-
-
-class IfThenElse < Exp
+class IfThenElse < Stmt
     def initialize(cond, ifTrue, ifFalse)
         @cond = cond
         @ifTrue = ifTrue
@@ -153,26 +141,32 @@ class IfThenElse < Exp
         if @cond.evaluate(state)
             @ifTrue.evaluate(state)
         else
-            @ifFalse.evaluate(state)
+            if !@ifFalse.nil?
+                @ifFalse.evaluate(state)
+            end
         end
     end
 end
 
-class OurTrue < Exp
-    def initialize()
-        @n = true
+class IfThen < IfThenElse
+    def initialize(cond, ifTrue)
+        @cond = cond
+        @ifTrue = ifTrue
+        @ifFalse = nil
     end
+end
+
+
+class OurTrue < Exp
+    # Sounds like communism propaganda but ok
     def evaluate(state)
-        @n
+        true
     end
 end
 
 class OurFalse < Exp
-    def initialize()
-        @n = false
-    end
     def evaluate(state)
-        @n
+        false
     end
 end
 
@@ -198,26 +192,23 @@ class OurWhile < Stmt
     def initialize(cond, body)
         @cond = cond
         @body = body
-    end 
-    def iteration(cond, body, state)
-        if cond.evaluate(state)
-            body.evaluate(state)
-            iteration(cond, body, state)
-        end
-    end        
+    end    
     def evaluate(state)
-        iteration(@cond, @body, state)
+        if @cond.evaluate(state)
+            @body.evaluate(state)
+            evaluate(state)
+        end
     end
 end
 
 class Sequence < Stmt
-    def initialize(first, second)
-        @first = first
-        @second = second
+    def initialize(statements)
+        @statements = statements
     end 
     def evaluate(state)
-        @first.evaluate(state)
-        @second.evaluate(state)
+        @statements.each do |statement| 
+            statement.evaluate(state)
+        end
     end
 end
 
@@ -234,33 +225,33 @@ if __FILE__ == $0
     state = Hash.new
     number_3 = Num.new(3)
     number_2 = Num.new(2)
-    var_3 = Var.new("one",state)
-    var_2 = Var.new("two",state)
+    var_3 = Var.new("one")
+    var_2 = Var.new("two")
     Assign.new(var_3, number_3).evaluate(state)
     Assign.new(var_2, number_2).evaluate(state)
     puts "1 - {\"one\"=>3.0, \"two\"=>2.0}:\n #{state}"
     
-    var_mult = Var.new("mult",state)
+    var_mult = Var.new("mult")
     Assign.new(var_mult, Mult.new(var_2,var_3)).evaluate(state)
     puts "2 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0}:\n #{state}"
     
-    var_sub = Var.new("sub",state)
+    var_sub = Var.new("sub")
     Assign.new(var_sub, Sub.new(var_3,var_2)).evaluate(state)
     puts "3 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0, \"sub\"=>1.0}:\n #{state}"
     
-    var_nsub = Var.new("-sub",state)
+    var_nsub = Var.new("-sub")
     Assign.new(var_nsub, Sub.new(var_2,var_3)).evaluate(state)
     puts "4 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0, \"sub\"=>1.0, \"-sub\"=>-1.0}:\n #{state}"
     
-    var_zero = Var.new("zero",state)
+    var_zero = Var.new("zero")
     Assign.new(var_zero, Add.new(var_nsub,var_sub)).evaluate(state)
     puts "5 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0, \"sub\"=>1.0, \"-sub\"=>-1.0, \"zero\"=>0.0}:\n #{state}"
     
-    var_div = Var.new("div",state)
+    var_div = Var.new("div")
     Assign.new(var_div, Div.new(var_mult,var_2)).evaluate(state)
     puts "6 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0, \"sub\"=>1.0, \"-sub\"=>-1.0, \"zero\"=>0.0, \"div\"=>3.0}:\n #{state}"
 
-    var_oposdiv = Var.new("oposdiv",state)
+    var_oposdiv = Var.new("oposdiv")
     Assign.new(var_oposdiv, Opos.new(var_div)).evaluate(state)
     puts "7 - {\"one\"=>3.0, \"two\"=>2.0, \"mult\"=>6.0, \"sub\"=>1.0, \"-sub\"=>-1.0, \"zero\"=>0.0, \"div\"=>3.0, \"oposdiv\"=>-3.0}:\n #{state}"
 
@@ -334,7 +325,7 @@ if __FILE__ == $0
     Print.new(IfThenElse.new(OurFalse.new(),Num.new(1),Num.new(2))).evaluate(state)
     
     puts "23.1 - SEQUENCE: Print: 3.0 "
-    var_seq = Var.new("seq",state)
-    Print.new(Sequence.new(Assign.new(var_seq, Num.new(2)),Assign.new(var_seq,Add.new(var_seq,Num.new(1))))).evaluate(state)
+    var_seq = Var.new("seq")
+    Print.new(Sequence.new([Assign.new(var_seq, Num.new(2)),Assign.new(var_seq,Add.new(var_seq,Num.new(1)))])).evaluate(state)
     puts "23.2 END STATE: #{state}"
 end
