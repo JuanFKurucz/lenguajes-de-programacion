@@ -68,48 +68,48 @@ const states = [
   {
     code: "22 33 4 - *".split(" "),
     pos: 0,
-    stack: [],
+    stack,
   },
   {
     code: "1 10 5 / +".split(" "),
     pos: 0,
-    stack: [],
+    stack,
   },
   {
     code: "10 2 10 5 / + *".split(" "),
     pos: 0,
-    stack: [],
+    stack,
   },
   {
     code: "5 5 5 5 5 1 - * + / +".split(" "), //, "3"],//, ">"],
     pos: 0,
-    stack: [],
+    stack,
   },
   {
     code: "* + -".split(" "),
     pos: 0,
-    stack: [],
+    stack,
   },
   {
     code: "25 10 4 8 9 3 + - + * +".split(" "),
     pos: 0,
-    stack: [],
+    stack,
   },
   {
     code: "15 + *".split(" "),
     pos: 0,
-    stack: [],
+    stack,
   },
   {
     code: "2 / 4 +".split(" "),
     pos: 0,
-    stack: [],
+    stack,
   },
   {
     code: "45 20 45450 37 25 108 25 35 12 - * + / + + - +".split(" "),
     pos: 0,
-    stack: [],
+    stack,
   },
 ];
 
-evaluate(a);
+state.forEach((element) => evaluate(element));
