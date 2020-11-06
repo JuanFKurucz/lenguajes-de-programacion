@@ -13,8 +13,8 @@ let a = {
 
 const methods = {
   "+": (a, b) => a + b,
-  "-": (a, b) => a - b,
-  "/": (a, b) => a / b,
+  "-": (a, b) => b - a,
+  "/": (a, b) => b / a,
   "*": (a, b) => a * b,
   "==": (a, b) => a == b,
   "!=": (a, b) => a != b,
@@ -51,12 +51,14 @@ const evaluate = (state) => {
 // 22 33 4 - * = 638
 // 1 10 5 / + = 3
 // 10 2 10 5 / + * = 40
-// 5 5 5 5 5 1 - * + / + = 5
-// * + - = 435
+// 5 5 5 5 5 1 - * + / + = 5.2
+// * + - = 427
 // 25 10 4 8 9 3 + - + * + = 25
-// 15 + * = 17400
-// 2 / 4 + = 8704
-// 45 20 45450 37 25 108 25 35 12 - * + / + + - + = -45422
+// 15 + * = 17080
+// 2 / 4 + = 8544
+// 45 20 45450 37 25 108 25 35 12 - * + / + + - + = -45422.03660322108
+//
+
 let stack = [];
 
 const states = [
@@ -110,6 +112,61 @@ const states = [
     pos: 0,
     stack,
   },
+  {
+    code: "1 2 ==".split(" "),
+    pos: 0,
+    stack,
+  },
+  {
+    code: "12 12 == !=".split(" "),
+    pos: 0,
+    stack,
+  },
+  {
+    code: "1 <".split(" "),
+    pos: 0,
+    stack,
+  },
+  {
+    code: "1 <=".split(" "),
+    pos: 0,
+    stack,
+  },
+  {
+    code: "1 >".split(" "),
+    pos: 0,
+    stack,
+  },
+  {
+    code: "1 >=".split(" "),
+    pos: 0,
+    stack,
+  },
+  {
+    code: "1 !".split(" "),
+    pos: 0,
+    stack,
+  },
+  {
+    code: "0 !".split(" "),
+    pos: 0,
+    stack,
+  },
+  {
+    code: "&&".split(" "),
+    pos: 0,
+    stack,
+  },
+  {
+    code: "||".split(" "),
+    pos: 0,
+    stack,
+  },
+  {
+    code: "3 +".split(" "),
+    pos: 0,
+    stack,
+  },
 ];
 
-state.forEach((element) => evaluate(element));
+states.forEach((element) => evaluate(element));
