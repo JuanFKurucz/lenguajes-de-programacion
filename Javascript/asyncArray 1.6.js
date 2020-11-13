@@ -1,59 +1,108 @@
-// https://medium.com/tarkalabs/async-await-wrapper-for-callback-style-javascript-code-cde2b699122f
-awesomeFunction(10, (result, error) => {
-  // if error object is present, handle accordingly
-  // else, use the results and do something
-});
-
-// Version con wraper
-async function awesomeFunctionWrapper(input) {
-  return await new Promise((resolve, reject) => {
-    awesomeFunction(input, (result, err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result);
-      }
-    });
-  });
-}
-
-/* Estas son nuestras funciones */
-// Version con wraper
+// // Version con wraper
 async function asyncMap(array, fn) {
-  const result = await new Promise((resolve, reject) => {
-    if (result === undefined) {
-      reject(new Error("Error en map"));
-    } else {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let result = [];
+      for (elem of array) {
+        let newElem = await fn(elem);
+        result.push(newElem);
+      }
       resolve(result);
+    } catch (error) {
+      reject(error);
     }
   });
-  return result;
 }
 
-// async function asyncMap(array, fn) {
-//     return array.map(fn);
-// }
-
 async function asyncFilter(array, fn) {
-  return array.filter(fn);
+  return new Promise(async (resolve, reject) => {
+    try {
+      let result = [];
+      for (elem of array) {
+        let newElem = await fn(elem);
+        if (newElem) {
+          result.push(elem);
+        }
+      }
+      resolve(result);
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 async function asyncReduce(array, fn) {
-  return array.reduce(fn);
+  return new Promise(async (resolve, reject) => {
+    try {
+      let result = 0;
+      for (elem of array) {
+        result = await fn(result, elem);
+      }
+      resolve(result);
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 async function asyncForEach(array, fn) {
-  return array.forEach(fn);
+  return new Promise(async (resolve, reject) => {
+    try {
+      for (elem of array) {
+        await fn(elem);
+      }
+      resolve(true);
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 /* TESTS */
-const unArray = [2, 3, 4];
-const timesTwo = (elem) => elem * 2;
-const greaterThanTwo = (elem) => elem > 2;
-const reducer = (accumulator, currentValue) => accumulator + currentValue;
-const logElement = (elem) => console.log(elem);
+const unArray = [1, 2, 3];
+const timesTwo = (elem) => Promise.resolve(elem * 2);
+const greaterThanTwo = (elem) => Promise.resolve(elem > 2);
+const reducer = (accumulator, currentValue) =>
+  Promise.resolve(accumulator + currentValue);
+const logElement = (elem) => Promise.resolve(console.log(elem));
+const delayMultTwo = async (elem) =>
+  new Promise((resolve) => {
+    setTimeout(() => resolve(elem * 2), 100);
+  });
 
-console.log(asyncMap(unArray, timesTwo)); // Promise { [ 4, 6, 8 ] }
-console.log(asyncFilter(unArray, greaterThanTwo)); // Promise { [ false, true, true ] }
-console.log(asyncReduce(unArray, reducer)); // Promise { 9 }
-console.log(asyncForEach(unArray, logElement)); // 2 / 3 / 4
+/* Segunda prueba*/
+const init = async () => {
+  try {
+    // MAP
+    console.log("before Map");
+    let result = await asyncMap([1, 2, 3], delayMultTwo);
+    console.log(result);
+    console.log(`Resultado de map: ${result} = [2,4,6]`);
+    console.log("after map -----------");
+
+    // FILTER
+    console.log("before Filter");
+    result = await asyncFilter([1, 2, 3], greaterThanTwo);
+    console.log(result);
+    console.log(`Resultado de filter: ${result} = [1,3]`);
+    console.log("after Filter -----------");
+
+    // REDUCE
+    console.log("before Reduce");
+    result = await asyncReduce([1, 2, 3, 4], reducer);
+    console.log(result);
+    console.log(`Resultado de Reduce: ${result} = 10`);
+    console.log("after Reduce -----------");
+
+    // FOREACH
+    console.log("before forEach");
+    result = await asyncForEach([1, -2, 3], logElement);
+    console.log(result);
+    console.log(`Resultado de forEach: ? = 10`);
+    console.log("after forEach -----------");
+  } catch (error) {
+    console.log(error);
+    // handle error
+  }
+};
+init();
